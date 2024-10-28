@@ -298,7 +298,18 @@ function isContainNumber(num, digit) {
  *  [1, 2, 3, 4, 5] => -1   => no balance element
  */
 function getBalanceIndex(arr) {
-  
+  let sumLeft = 0;
+  for (let i = 0; i < arr.length; i += 1) {
+    sumLeft += arr[i];
+    let sumRight = 0;
+    for (let k = i + 2; k < arr.length; k += 1) {
+      sumRight += arr[k];
+    }
+    if (sumLeft === sumRight) {
+      return i + 1;
+    }
+  }
+  return -1;
 }
 
 /**
@@ -323,7 +334,15 @@ function getBalanceIndex(arr) {
  *        ]
  */
 function getSpiralMatrix(/* size */) {
-  throw new Error('Not implemented');
+  /* const matrix = [];
+  let j = 0;
+  let counter = 1;
+  for (let j = 0; j < Math.ceil(size / 2); j++) {
+    for (let i = 0; i < size - j; i += 1) {
+      matrix[j][i] = counter;
+      counter += 1;
+    }
+  } */ throw new Error('Not implemented');
 }
 
 /**
@@ -341,8 +360,27 @@ function getSpiralMatrix(/* size */) {
  *    [7, 8, 9]         [9, 6, 3]
  *  ]                 ]
  */
-function rotateMatrix(/* matrix */) {
-  throw new Error('Not implemented');
+function rotateMatrix(matrix) {
+  const newMatrix = matrix;
+  const n = matrix.length;
+
+  for (let i = 0; i < n; i += 1) {
+    for (let j = i + 1; j < n; j += 1) {
+      const temp = newMatrix[i][j];
+      newMatrix[i][j] = newMatrix[j][i];
+      newMatrix[j][i] = temp;
+    }
+  }
+
+  for (let i = 0; i < n; i += 1) {
+    for (let j = 0; j < Math.floor(n / 2); j += 1) {
+      const temp = newMatrix[i][j];
+      newMatrix[i][j] = newMatrix[i][n - 1 - j];
+      newMatrix[i][n - 1 - j] = temp;
+    }
+  }
+
+  return newMatrix;
 }
 
 /**
@@ -359,8 +397,18 @@ function rotateMatrix(/* matrix */) {
  *  [2, 9, 5, 9]    => [2, 5, 9, 9]
  *  [-2, 9, 5, -3]  => [-3, -2, 5, 9]
  */
-function sortByAsc(/* arr */) {
-  throw new Error('Not implemented');
+function sortByAsc(arrD) {
+  const arr = arrD;
+  let checkedNumber;
+  for (let i = 1; i < arr.length; i += 1) {
+    checkedNumber = arr[i];
+    for (let j = i - 1; j >= 0; j -= 1) {
+      if (checkedNumber < arr[j]) {
+        arr[i] = arr[j];
+        arr[j] = checkedNumber;
+      } else break;
+    }
+  }
 }
 
 /**
