@@ -333,16 +333,53 @@ function getBalanceIndex(arr) {
  *          [10, 9,  8,  7]
  *        ]
  */
-function getSpiralMatrix(/* size */) {
-  /* const matrix = [];
-  let j = 0;
-  let counter = 1;
-  for (let j = 0; j < Math.ceil(size / 2); j++) {
-    for (let i = 0; i < size - j; i += 1) {
-      matrix[j][i] = counter;
-      counter += 1;
+function getSpiralMatrix(s) {
+  const size = s;
+  const m = [];
+  let count = 1;
+  for (let i = 0; i < size; i += 1) {
+    m[i] = [];
+  }
+
+  let rowStart = 0;
+  let rowEnd = size - 1;
+  let colStart = 0;
+  let colEnd = size - 1;
+
+  function fillRing() {
+    if (rowStart > rowEnd || colStart > colEnd) {
+      return;
     }
-  } */ throw new Error('Not implemented');
+
+    for (let i = colStart; i <= colEnd; i += 1) {
+      m[rowStart][i] = count;
+      count += 1;
+    }
+    rowStart += 1;
+
+    for (let i = rowStart; i <= rowEnd; i += 1) {
+      m[i][colEnd] = count;
+      count += 1;
+    }
+    colEnd -= 1;
+
+    for (let i = colEnd; i >= colStart; i -= 1) {
+      m[rowEnd][i] = count;
+      count += 1;
+    }
+    rowEnd -= 1;
+
+    for (let i = rowEnd; i >= rowStart; i -= 1) {
+      m[i][colStart] = count;
+      count += 1;
+    }
+    colStart += 1;
+
+    fillRing();
+  }
+
+  fillRing();
+  return m;
 }
 
 /**
@@ -440,24 +477,55 @@ function sortByAsc(arr) {
  *  'qwerty', 3 => 'qetwry' => 'qtrewy' => 'qrwtey'
  */
 function shuffleChar(str, iterations) {
-  let restIterations = iterations;
-  function shuffle(string) {
-    let rightPart = '';
-    let leftPart = '';
-    for (let i = 1; i < string.length; i += 2) {
-      rightPart += string[i];
-    }
-    for (let i = 0; i < string.length; i += 2) {
-      leftPart += string[i];
-    }
-    const resStr = leftPart + rightPart;
-    restIterations -= 1;
-    if (restIterations) {
-      return shuffle(resStr);
-    }
-    return resStr;
+  if (iterations === 0 || str.length < 2) {
+    return str;
   }
-  return shuffle(str);
+
+  let shuffledString = str;
+  const initialString = str;
+  let cycleFound = false;
+  let cycleLength = 0;
+
+  for (let iter = 0; iter < iterations; iter += 1) {
+    let evenIndexChars = '';
+    let oddIndexChars = '';
+
+    for (let index = 0; index < shuffledString.length; index += 1) {
+      if (index % 2 === 0) {
+        evenIndexChars += shuffledString.charAt(index);
+      } else {
+        oddIndexChars += shuffledString.charAt(index);
+      }
+    }
+
+    shuffledString = evenIndexChars + oddIndexChars;
+
+    if (!cycleFound && shuffledString === initialString) {
+      cycleFound = true;
+      cycleLength = iter + 1;
+      break;
+    }
+  }
+
+  if (cycleFound) {
+    const effectiveIterations = iterations % cycleLength;
+    for (let iter = 0; iter < effectiveIterations; iter += 1) {
+      let evenIndexChars = '';
+      let oddIndexChars = '';
+
+      for (let index = 0; index < shuffledString.length; index += 1) {
+        if (index % 2 === 0) {
+          evenIndexChars += shuffledString.charAt(index);
+        } else {
+          oddIndexChars += shuffledString.charAt(index);
+        }
+      }
+
+      shuffledString = evenIndexChars + oddIndexChars;
+    }
+  }
+
+  return shuffledString;
 }
 
 /**
@@ -477,8 +545,33 @@ function shuffleChar(str, iterations) {
  * @param {number} number The source number
  * @returns {number} The nearest larger number, or original number if none exists.
  */
-function getNearestBigger(/* number */) {
-  throw new Error('Not implemented');
+function getNearestBigger(number) {
+  const numArr = Array.from(`${number}`, (el) => Number(el));
+  let index;
+  let el;
+  for (let i = numArr.length - 1; i > 0; i -= 1) {
+    if (numArr[i] > numArr[i - 1]) {
+      index = i - 1;
+      el = numArr[index];
+      break;
+    }
+  }
+  const leftArr = numArr.splice(0, index);
+  const rightPart = numArr.sort((a, b) => a - b);
+  let nextEl;
+  let indexNextEl;
+  for (let i = 0; i < rightPart.length; i += 1) {
+    if (rightPart[i] === el) {
+      nextEl = rightPart[i + 1];
+      indexNextEl = i + 1;
+    }
+  }
+  const rightArr = [
+    ...rightPart.splice(0, indexNextEl),
+    ...rightPart.splice(1),
+  ];
+  const resNumber = +[...leftArr, nextEl, ...rightArr].join('');
+  return resNumber;
 }
 
 module.exports = {
